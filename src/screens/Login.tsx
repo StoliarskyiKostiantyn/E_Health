@@ -1,24 +1,39 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import {TextInput} from 'react-native-gesture-handler';
+import {useHeaderHeight} from '@react-navigation/elements';
+
 import BackgroundContainer from '../containers/BackgroundContainer';
 const Login = () => {
+  const [isShowKeyBoard, setIsShowKeyBoard] = useState(false);
+  const height = useHeaderHeight();
+  console.log({height});
   return (
     <BackgroundContainer>
-      <View style={styles.form}>
-        <Text style={styles.text}>Welcome back!</Text>
-        <Text style={styles.text}>Hello again</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={height + 100}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <View style={{...styles.form, marginBottom: isShowKeyBoard ? 20 : 150}}>
+          <Text style={styles.text}>Welcome back!</Text>
+          <Text style={styles.text}>Hello again</Text>
+
           <View style={styles.inputView}>
             <Text style={styles.fromText}>Email</Text>
-            <TextInput style={styles.input} textAlign={'left'} />
+            <TextInput
+              style={styles.input}
+              textAlign={'left'}
+              keyboardAppearance={'default'}
+              onFocus={() => {
+                setIsShowKeyBoard(true);
+              }}
+            />
           </View>
           <View style={styles.inputView}>
             <Text style={styles.fromText}>Password</Text>
@@ -26,10 +41,16 @@ const Login = () => {
               style={styles.input}
               textAlign={'left'}
               secureTextEntry
+              onFocus={() => {
+                setIsShowKeyBoard(true);
+              }}
             />
           </View>
-        </KeyboardAvoidingView>
-      </View>
+          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <Text style={styles.buttonText}>SIGN IN</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </BackgroundContainer>
   );
 };
@@ -57,6 +78,22 @@ const styles = StyleSheet.create({
     height: 40,
     color: '#fff',
     borderRadius: 6,
+  },
+  button: {
+    height: 40,
+    width: 200,
+    backgroundColor: 'blue',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: 'black',
+    alignItems: 'center',
+    alignContent: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
   },
 });
 
