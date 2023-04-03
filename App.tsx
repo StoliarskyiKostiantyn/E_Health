@@ -8,13 +8,26 @@ import Registration from './src/screens/Registration';
 
 const MainStack = createNativeStackNavigator();
 
+const getIsSignedIn = () => {
+  // custom logic
+  return false;
+};
 const App = () => {
+  const isSignedIn = getIsSignedIn();
+
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="Login">
-        <MainStack.Screen name="Registration" component={Registration} />
-        <MainStack.Screen name="Login" component={Login} />
-        <MainStack.Screen name="Home" component={Home} />
+      <MainStack.Navigator>
+        {isSignedIn ? (
+          <>
+            <MainStack.Screen name="Home" component={Home} />
+          </>
+        ) : (
+          <>
+            <MainStack.Screen name="SignIn" component={Login} />
+            <MainStack.Screen name="SignUp" component={Registration} />
+          </>
+        )}
       </MainStack.Navigator>
     </NavigationContainer>
   );

@@ -11,10 +11,9 @@ import {
 import {useHeaderHeight} from '@react-navigation/elements';
 
 import BackgroundContainer from '../containers/BackgroundContainer';
-const Login = () => {
+const Login = ({navigation}: any) => {
   const [isShowKeyBoard, setIsShowKeyBoard] = useState(false);
   const height = useHeaderHeight();
-  console.log({height});
   return (
     <BackgroundContainer>
       <KeyboardAvoidingView
@@ -29,6 +28,7 @@ const Login = () => {
             <TextInput
               style={styles.input}
               textAlign={'left'}
+              scrollEnabled={false}
               keyboardAppearance={'default'}
               onFocus={() => {
                 setIsShowKeyBoard(true);
@@ -39,6 +39,7 @@ const Login = () => {
             <Text style={styles.fromText}>Password</Text>
             <TextInput
               style={styles.input}
+              scrollEnabled={false}
               textAlign={'left'}
               secureTextEntry
               onFocus={() => {
@@ -47,7 +48,12 @@ const Login = () => {
             />
           </View>
           <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-            <Text style={styles.buttonText}>SIGN IN</Text>
+            <Text style={styles.buttonText}>LOG IN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.navbar}
+            onPress={() => navigation.navigate('Registration')}>
+            <Text style={styles.fromText}>Have no account tap this text</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -67,7 +73,6 @@ const styles = StyleSheet.create({
   fromText: {
     color: 'azure',
     fontSize: 20,
-    marginBottom: 10,
   },
   inputView: {
     marginVertical: 20,
@@ -94,6 +99,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 20,
+  },
+  navbar: {
+    margin: 20,
   },
 });
 
