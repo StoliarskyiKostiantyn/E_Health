@@ -2,15 +2,15 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 
-import Home from './src/screens/Home';
 import Login from './src/screens/Login';
 import Registration from './src/screens/Registration';
+import {MyDrawer} from './src/drawer/MyDrawer';
 
 const MainStack = createNativeStackNavigator();
 
 const getIsSignedIn = () => {
   // custom logic
-  return false;
+  return true;
 };
 const App = () => {
   const isSignedIn = getIsSignedIn();
@@ -20,7 +20,13 @@ const App = () => {
       <MainStack.Navigator>
         {isSignedIn ? (
           <>
-            <MainStack.Screen name="Home" component={Home} />
+            <MainStack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="MyDrawer"
+              component={MyDrawer}
+            />
           </>
         ) : (
           <>
