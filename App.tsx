@@ -5,20 +5,18 @@ import React from 'react';
 import Home from './src/screens/Home';
 import Login from './src/screens/Login';
 import Registration from './src/screens/Registration';
+import './src/firebase/config';
+import {useAuth} from './src/hooks/useAuth';
 
 const MainStack = createNativeStackNavigator();
 
-const getIsSignedIn = () => {
-  // custom logic
-  return false;
-};
 const App = () => {
-  const isSignedIn = getIsSignedIn();
+  const {userA} = useAuth();
 
   return (
     <NavigationContainer>
       <MainStack.Navigator>
-        {isSignedIn ? (
+        {userA ? (
           <>
             <MainStack.Screen name="Home" component={Home} />
           </>

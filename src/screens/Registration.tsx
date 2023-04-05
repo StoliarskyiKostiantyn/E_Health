@@ -11,9 +11,36 @@ import {
 import {useHeaderHeight} from '@react-navigation/elements';
 
 import BackgroundContainer from '../containers/BackgroundContainer';
-const Login = ({navigation}: any) => {
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+
+const Registration = ({navigation}: any) => {
   const [isShowKeyBoard, setIsShowKeyBoard] = useState(false);
+  const [value, setValue] = React.useState({
+    email: '',
+    password: '',
+    error: '',
+  });
   const height = useHeaderHeight();
+  const auth = getAuth();
+
+  async function signUp() {
+    if (value.email === '' || value.password === '') {
+      setValue({
+        ...value,
+        error: 'Email and password are mandatory.',
+      });
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, value.email, value.password);
+    } catch (error: any) {
+      setValue({
+        ...value,
+        error: error.message,
+      });
+    }
+  }
   return (
     <BackgroundContainer>
       <KeyboardAvoidingView
@@ -23,20 +50,11 @@ const Login = ({navigation}: any) => {
           <Text style={styles.text}>Welcome back!</Text>
           <Text style={styles.text}>Hello again</Text>
           <View style={styles.inputView}>
-            <Text style={styles.fromText}>User Name</Text>
-            <TextInput
-              style={styles.input}
-              textAlign={'left'}
-              keyboardAppearance={'default'}
-              onFocus={() => {
-                setIsShowKeyBoard(true);
-              }}
-            />
-          </View>
-          <View style={styles.inputView}>
             <Text style={styles.fromText}>Email</Text>
             <TextInput
               style={styles.input}
+              value={value.email}
+              onChangeText={text => setValue({...value, email: text})}
               textAlign={'left'}
               keyboardAppearance={'default'}
               onFocus={() => {
@@ -53,9 +71,13 @@ const Login = ({navigation}: any) => {
               onFocus={() => {
                 setIsShowKeyBoard(true);
               }}
+              onChangeText={text => setValue({...value, password: text})}
             />
           </View>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.7}
+            onPress={signUp}>
             <Text style={styles.buttonText}>SIGN IN</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -113,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Registration;

@@ -11,9 +11,36 @@ import {
 import {useHeaderHeight} from '@react-navigation/elements';
 
 import BackgroundContainer from '../containers/BackgroundContainer';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 const Login = ({navigation}: any) => {
   const [isShowKeyBoard, setIsShowKeyBoard] = useState(false);
   const height = useHeaderHeight();
+  const auth = getAuth();
+
+  const [value, setValue] = React.useState({
+    email: '',
+    password: '',
+    error: '',
+  });
+
+  async function signIn() {
+    if (value.email === '' || value.password === '') {
+      setValue({
+        ...value,
+        error: 'Email and password are mandatory.',
+      });
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, value.email, value.password);
+    } catch (error: any) {
+      setValue({
+        ...value,
+        error: error.message,
+      });
+    }
+  }
   return (
     <BackgroundContainer>
       <KeyboardAvoidingView
@@ -29,6 +56,8 @@ const Login = ({navigation}: any) => {
               style={styles.input}
               textAlign={'left'}
               scrollEnabled={false}
+              value={value.email}
+              onChangeText={text => setValue({...value, email: text})}
               keyboardAppearance={'default'}
               onFocus={() => {
                 setIsShowKeyBoard(true);
@@ -45,9 +74,13 @@ const Login = ({navigation}: any) => {
               onFocus={() => {
                 setIsShowKeyBoard(true);
               }}
+              onChangeText={text => setValue({...value, password: text})}
             />
           </View>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.7}
+            onPress={signIn}>
             <Text style={styles.buttonText}>LOG IN</Text>
           </TouchableOpacity>
           <TouchableOpacity
