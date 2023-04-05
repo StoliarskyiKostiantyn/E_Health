@@ -24,8 +24,8 @@ const App = () => {
           </>
         ) : (
           <>
-            <MainStack.Screen name="SignIn" component={Login} />
-            <MainStack.Screen name="SignUp" component={Registration} />
+            <MainStack.Screen name="Login" component={Login} />
+            <MainStack.Screen name="Registration" component={Registration} />
           </>
         )}
       </MainStack.Navigator>
