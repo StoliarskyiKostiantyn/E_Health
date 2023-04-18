@@ -7,13 +7,63 @@ import {
   Platform,
   TouchableOpacity,
   TextInput,
+  ToastAndroid,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useHeaderHeight} from '@react-navigation/elements';
 
 import BackgroundContainer from '../containers/BackgroundContainer';
+
+const storeToken = async token => {
+  try {
+    await AsyncStorage.setItem('access_token', token);
+  } catch (e) {
+    console.log(e);
+  }
+};
 const Login = ({navigation}: any) => {
   const [isShowKeyBoard, setIsShowKeyBoard] = useState(false);
   const height = useHeaderHeight();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const showToast = () => {
+    ToastAndroid.show('Registration success!', ToastAndroid.SHORT);
+  };
+  const login = async () => {
+    try {
+      setLoading(true);
+      console.log(
+        JSON.stringify({
+          username: email.toString(),
+          password: password.toString(),
+        }),
+      );
+
+      const res = await fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: email.toString(),
+          password: password.toString(),
+        }),
+      });
+      const json = await res.json();
+      console.log('res', json.detail[0]);
+
+      setEmail('');
+      setPassword('');
+      showToast();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <BackgroundContainer>
       <KeyboardAvoidingView
@@ -33,6 +83,8 @@ const Login = ({navigation}: any) => {
               onFocus={() => {
                 setIsShowKeyBoard(true);
               }}
+              onChangeText={newText => setEmail(newText)}
+              defaultValue={email}
             />
           </View>
           <View style={styles.inputView}>
@@ -45,9 +97,15 @@ const Login = ({navigation}: any) => {
               onFocus={() => {
                 setIsShowKeyBoard(true);
               }}
+              onChangeText={newText => setPassword(newText)}
+              defaultValue={password}
             />
           </View>
-          <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.7}
+            disabled={loading}
+            onPress={login}>
             <Text style={styles.buttonText}>LOG IN</Text>
           </TouchableOpacity>
           <TouchableOpacity
